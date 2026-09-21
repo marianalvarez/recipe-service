@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="3-add-search-indexes" author="developer">
+        <createIndex indexName="idx_recipe_ingredients_name" tableName="recipe_ingredients">
+            <column name="name"/>
+        </createIndex>
+        <createIndex indexName="idx_recipe_ingredients_recipe_id" tableName="recipe_ingredients">
+            <column name="recipe_id"/>
+        </createIndex>
+        <createIndex indexName="idx_recipe_instructions_instruction_text" tableName="recipe_instructions">
+            <column name="instruction_text"/>
+        </createIndex>
+        <createIndex indexName="idx_recipe_instructions_recipe_id" tableName="recipe_instructions">
+            <column name="recipe_id"/>
+        </createIndex>
+        <sql>
+            CREATE INDEX idx_recipe_ingredients_lower_name ON recipe_ingredients (LOWER(name));
+        </sql>
+    </changeSet>
+
+    <changeSet id="3-add-instruction-trgm-index" author="developer">
+        <comment>
+            Instruction search uses LIKE %text%. A btree index cannot serve a leading wildcard;
+            pg_trgm GIN supports substring matches on lower(instruction_text).
+        </comment>
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS pg_trgm;
+            CREATE INDEX idx_recipe_instructions_instruction_text_trgm
+                ON recipe_instructions USING gin (LOWER(instruction_text) gin_trgm_ops);
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

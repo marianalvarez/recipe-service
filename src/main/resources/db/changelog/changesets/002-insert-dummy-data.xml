@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+    <changeSet id="2-insert-dummy-data" author="developer" runOnChange="true">
+        <delete tableName="recipe_instructions"/>
+        <delete tableName="recipe_ingredients"/>
+        <delete tableName="recipes"/>
+
+        <insert tableName="recipes">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="Vegetarian Pasta Primavera"/>
+            <column name="vegetarian" valueBoolean="true"/>
+            <column name="servings" valueNumeric="4"/>
+        </insert>
+        <insert tableName="recipe_ingredients">
+            <column name="recipe_id" valueNumeric="1"/>
+            <column name="name" value="pasta"/>
+            <column name="quantity" valueNumeric="250"/>
+            <column name="unit" value="grams"/>
+        </insert>
+        <insert tableName="recipe_ingredients">
+            <column name="recipe_id" valueNumeric="1"/>
+            <column name="name" value="bell peppers"/>
+            <column name="quantity" valueNumeric="2"/>
+            <column name="unit" value="pieces"/>
+        </insert>
+        <insert tableName="recipe_instructions">
+            <column name="recipe_id" valueNumeric="1"/>
+            <column name="step_number" valueNumeric="1"/>
+            <column name="instruction_text" value="Boil pasta in salted water for 10 minutes."/>
+        </insert>
+        <insert tableName="recipe_instructions">
+            <column name="recipe_id" valueNumeric="1"/>
+            <column name="step_number" valueNumeric="2"/>
+            <column name="instruction_text" value="Sauté chopped bell peppers in olive oil."/>
+        </insert>
+
+        <insert tableName="recipes">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Chicken Adobo"/>
+            <column name="vegetarian" valueBoolean="false"/>
+            <column name="servings" valueNumeric="4"/>
+        </insert>
+        <insert tableName="recipe_ingredients">
+            <column name="recipe_id" valueNumeric="2"/>
+            <column name="name" value="chicken"/>
+            <column name="quantity" valueNumeric="1"/>
+            <column name="unit" value="kilogram"/>
+        </insert>
+        <insert tableName="recipe_ingredients">
+            <column name="recipe_id" valueNumeric="2"/>
+            <column name="name" value="soy sauce"/>
+            <column name="quantity" valueNumeric="120"/>
+            <column name="unit" value="milliliters"/>
+        </insert>
+        <insert tableName="recipe_ingredients">
+            <column name="recipe_id" valueNumeric="2"/>
+            <column name="name" value="vinegar"/>
+            <column name="quantity" valueNumeric="80"/>
+            <column name="unit" value="milliliters"/>
+        </insert>
+        <insert tableName="recipe_ingredients">
+            <column name="recipe_id" valueNumeric="2"/>
+            <column name="name" value="garlic"/>
+            <column name="quantity" valueNumeric="1"/>
+            <column name="unit" value="head"/>
+        </insert>
+        <insert tableName="recipe_instructions">
+            <column name="recipe_id" valueNumeric="2"/>
+            <column name="step_number" valueNumeric="1"/>
+            <column name="instruction_text" value="Marinate chicken in soy sauce, vinegar, and crushed garlic for 30 minutes."/>
+        </insert>
+        <insert tableName="recipe_instructions">
+            <column name="recipe_id" valueNumeric="2"/>
+            <column name="step_number" valueNumeric="2"/>
+            <column name="instruction_text" value="Simmer the chicken in the marinade until tender and the sauce has reduced."/>
+        </insert>
+
+        <sql dbms="postgresql">
+            SELECT setval(pg_get_serial_sequence('recipes', 'id'), (SELECT COALESCE(MAX(id), 1) FROM recipes));
+            SELECT setval(pg_get_serial_sequence('recipe_ingredients', 'id'), (SELECT COALESCE(MAX(id), 1) FROM recipe_ingredients));
+            SELECT setval(pg_get_serial_sequence('recipe_instructions', 'id'), (SELECT COALESCE(MAX(id), 1) FROM recipe_instructions));
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
